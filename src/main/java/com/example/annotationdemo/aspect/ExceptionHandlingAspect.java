@@ -20,11 +20,25 @@ public class ExceptionHandlingAspect {
 
     @AroundInvoke
     public Object handleMathException(InvocationContext context) throws Exception {
-        SafeExecution safeExecution = context.getMethod().getAnnotation(SafeExecution.class);
+        var method = context.getMethod();
+        SafeExecution safeExecution = method.getAnnotation(SafeExecution.class);
+        if (safeExecution == null && context.getTarget() != null) {
+            try {
+                var targetMethod = context.getTarget().getClass().getMethod(method.getName(), method.getParameterTypes());
+                safeExecution = targetMethod.getAnnotation(SafeExecution.class);
+            } catch (NoSuchMethodException ignored) {
+                // Fall back to original method annotation if not found on the target class.
+            }
+        }
+        log.info("Intercepting method {} with SafeExecution, annotation present={}", method.getName(), safeExecution != null);
         try {
             return context.proceed();
         } catch (ArithmeticException e) {
-            String methodName = context.getMethod().getName();
+            if (safeExecution == null) {
+                log.error("SafeExecution annotation is missing on intercepted method {}", method.getName());
+                throw e;
+            }
+            String methodName = method.getName();
             String arguments = Arrays.toString(context.getParameters());
 
             log.error(
