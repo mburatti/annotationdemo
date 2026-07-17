@@ -1,0 +1,19 @@
+graph TD
+    A["Application calls CalculatorService divide"] --> B{"Has SafeExecution"}
+    B -->|Yes| C[Interceptor Aspect matches target method]
+    B -->|No| D[Method executes normally]
+    C --> E[Invoke around advice interceptor]
+    E --> F[Proceed to method implementation]
+    F --> G{"Throws ArithmeticException"}
+    G -->|No| H[Return actual result to caller]
+    G -->|Yes| I{"SafeExecution annotation present"}
+    I -->|Yes| J[Log error details and fallback reason]
+    J --> K[Return fallback value]
+    I -->|No| L[Log missing annotation error and rethrow]
+    L --> M[Exception propagates to caller]
+    D --> H
+    K --> H
+    M --> H
+    style H fill:#e0f7fa,stroke:#00796b,stroke-width:2px
+    style K fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    style M fill:#ffcdd2,stroke:#b71c1c,stroke-width:2px

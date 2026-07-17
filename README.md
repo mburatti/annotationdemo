@@ -30,6 +30,12 @@ In this project, the annotation is defined as an interceptor binding:
 
 You can create a new annotation with the same pattern and use it to trigger custom interceptor behavior.
 
+## Interceptor workflow
+
+![Interceptor workflow](interceptor-workflow.png)
+
+This diagram shows how the annotated method is intercepted, how the interceptor/aspect proceeds to the target method, and how fallback behavior is applied when an `ArithmeticException` occurs.
+
 ## How to use the annotation
 
 1. Define the annotation in `src/main/java/com/example/annotationdemo/annotation`.
@@ -72,6 +78,18 @@ This project uses the Quarkus native profile to build a native executable.
 After a successful native build, the executable is generated under:
 
 - `target/annotationdemo-0.0.1-SNAPSHOT-native-image-source-jar/`
+
+## Performance benchmark
+
+The following table shows end-to-end startup runs for the Quarkus JVM jar and the Quarkus native executable, plus observed peak memory usage for a single execution.
+
+| Runtime | Run 1 | Run 2 | Run 3 | Peak memory |
+|---|---|---|---|---|
+| Quarkus JVM | 0.402s | 0.307s | 0.220s | ~86.6 MB |
+| Quarkus Native | 0.884s | 0.022s | 0.023s | ~4.2 MB |
+| Spring Boot JVM | 1.05s | 0.91s | 0.71s | ~189 MB |
+
+> Note: the first native run includes cold startup and any process load overhead. Subsequent native runs are much faster, which is typical for a compiled native image. The Spring Boot row shows three JVM startup measurements for comparison.
 
 ## Notes
 
