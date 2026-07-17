@@ -7,7 +7,7 @@
 	<artifactId>annotationdemo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>annotationdemo</name>
-	<description>Quarkus migration of the annotation demo app</description>
+	<description>Quarkus annotation demo app</description>
 	<url/>
 
 	<properties>
