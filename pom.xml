@@ -2,63 +2,89 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.0</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-	
+
 	<groupId>com.example</groupId>
 	<artifactId>annotationdemo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>annotationdemo</name>
-	<description/>
+	<description>Quarkus migration of the annotation demo app</description>
 	<url/>
-	
-	<licenses>
-		<license/>
-	</licenses>
-	
-	<developers>
-		<developer/>
-	</developers>
-	
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
-	
+
 	<properties>
-		<java.version>17</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>25</java.version>
+		<maven.compiler.source>25</maven.compiler.source>
+		<maven.compiler.target>25</maven.compiler.target>
+		<quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+		<quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
+		<quarkus.platform.version>3.37.3</quarkus.platform.version>
 	</properties>
-	
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>${quarkus.platform.group-id}</groupId>
+				<artifactId>${quarkus.platform.artifact-id}</artifactId>
+				<version>${quarkus.platform.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-arc</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-aop</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-junit</artifactId>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<groupId>io.quarkus</groupId>
+				<artifactId>quarkus-maven-plugin</artifactId>
+				<version>${quarkus.platform.version}</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>native</id>
+			<activation>
+				<property>
+					<name>native</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<properties>
+				<quarkus.native.enabled>true</quarkus.native.enabled>
+				<quarkus.native.container-build>false</quarkus.native.container-build>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>

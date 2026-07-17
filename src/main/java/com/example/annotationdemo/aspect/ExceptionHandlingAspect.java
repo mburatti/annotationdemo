@@ -2,28 +2,30 @@ package com.example.annotationdemo.aspect;
 
 import com.example.annotationdemo.annotation.SafeExecution;
 import com.example.annotationdemo.util.LogIcon;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
+import jakarta.annotation.Priority;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
-@Aspect
-@Component
+@SafeExecution
+@Interceptor
+@Priority(Interceptor.Priority.APPLICATION)
 public class ExceptionHandlingAspect {
 
     private static final Logger log = LoggerFactory.getLogger(ExceptionHandlingAspect.class);
 
-    @Around("@annotation(safeExecution)")
-    public Object handleMathException(ProceedingJoinPoint joinPoint, SafeExecution safeExecution) throws Throwable {
+    @AroundInvoke
+    public Object handleMathException(InvocationContext context) throws Exception {
+        SafeExecution safeExecution = context.getMethod().getAnnotation(SafeExecution.class);
         try {
-            return joinPoint.proceed();
+            return context.proceed();
         } catch (ArithmeticException e) {
-            String methodName = joinPoint.getSignature().getName();
-            String arguments = Arrays.toString(joinPoint.getArgs());
+            String methodName = context.getMethod().getName();
+            String arguments = Arrays.toString(context.getParameters());
 
             log.error(
                 "[{} APPLICATION ERROR] | [Location] : {}() | [Inputs]   : {} | [Reason]   : {} | [Detail]   : {}",

@@ -1,9 +1,9 @@
 package com.example.annotationdemo.service;
 
 import com.example.annotationdemo.annotation.SafeExecution;
-import org.springframework.stereotype.Service;
+import jakarta.enterprise.context.ApplicationScoped;
 
-@Service
+@ApplicationScoped
 public class CalculatorService {
 
     @SafeExecution(

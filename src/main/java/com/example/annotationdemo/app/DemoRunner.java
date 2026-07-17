@@ -1,23 +1,23 @@
 package com.example.annotationdemo.app;
 
 import com.example.annotationdemo.service.CalculatorService;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
-@Component
-public class DemoRunner implements CommandLineRunner {
+@Singleton
+public class DemoRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DemoRunner.class);
 
     private final CalculatorService calculatorService;
 
+    @Inject
     public DemoRunner(CalculatorService calculatorService) {
         this.calculatorService = calculatorService;
     }
 
-    @Override
     public void run(String... args) {
         log.info("--- Test 1: Valid Division ---");
         int successResult = calculatorService.divide(10, 2);
